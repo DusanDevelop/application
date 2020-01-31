@@ -1,0 +1,20 @@
+﻿<!-- Import model to this page-->
+@model IEnumerable<myMVCApp.Models.Department>
+@using myMVCApp.Models;
+@{
+    ViewBag.Title = "Department List";
+}
+
+<h2>Department List</h2>
+
+<div style="font-family:Arial">
+    <ul>
+        @foreach (Department department in Model)
+        {
+        <li>
+            <!-- MVC HTML helper tag, redirect to  employee page ..link text, action name, controller name and route value ..pass departmentTd PK -->
+            @Html.ActionLink(department.Name, "Index", "Employee", new { departmentId = department.DepartmentId }, null)
+        </li>
+        }
+    </ul>
+</div>
