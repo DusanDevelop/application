@@ -8,13 +8,18 @@
 
 <h2>List of Employees</h2>
 <div style="font-family:Arial">
+    <p>
+        <!-- TO DO : Action-->
+        @Html.ActionLink("Create New", "Create")
+    </p>
+
     <ul>
         @foreach (Employee employee in Model)
         {
-        <li>
-            <!-- MVC HTML helper tag, redirect to  page link text, action name, controller name and route values dictionary  -->
-            @Html.ActionLink(employee.Name, "Details", "Employee", new { id = employee.EmployeeId }, null)
-        </li>
+            <li>
+                <!-- MVC HTML helper tag, redirect to  page link text, action name, controller name and route values dictionary  -->
+                @Html.ActionLink(employee.Name, "Details", "Employee", new { id = employee.EmployeeId }, null)
+            </li>
         }
     </ul>
 </div>
