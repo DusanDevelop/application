@@ -8,12 +8,10 @@
 
 <h2>List of Employees</h2>
 <div style="font-family:Arial">
-
-    <table id="employees" class="table table-bordered table-hover">
+    <table id="Employees" class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>Employee Name</th>
-                <!-- Add new table hading -->
                 <th colspan="2">Action</th>
             </tr>
         </thead>
@@ -32,10 +30,9 @@
                         <!-- ActionName – Name of the Action. In this case the name is Delete -->
                         <!-- Name of the Controller. In this case the name is Employee -->
                         <!-- id is a root value -->
-                        @using (Html.BeginForm("Delete", "Employee"))
+                        @using (Html.BeginForm("Delete", "Employee", new { employee.EmployeeId }))
                         {
-                            <input type="submit" value="Delete" 
-                                   onclick="return confirm('Are you sure You want to delete @employee.Name ?');" />
+                            <input type="submit" value="Delete" />
                         }
                     </td>
                     <td>
@@ -45,51 +42,19 @@
                         }
                     </td>
                 </tr>
-                <tr>
-                   <!-- <td><input type="submit" value="Create New" id="New"/></td> -->
-                    <td><button type="button" onclick="location.href='@Url.Action("New", "Employee")'"> New Employee </button> </td> 
-                    <td><button type="button" onclick="location.href='@Url.Action("Index", "Department")'"> Back to Department list </button></td>
-                </tr>
-            }
+             }
         </tbody>
     </table>
-    <!--
-    <p>
-       Html.ActionLink("Back to Department list", "Index", "Department")
-       Html.ActionLink("Create New", "Create")
-    </p> -->
-</div>
+    <div>
+        <button type="button" onclick="location.href='@Url.Action("Index", "Department")'"> Back to Department list </button>
+        <button type="button" onclick="location.href='@Url.Action("New", "Employee", new { Model.FirstOrDefault().DepartmentId } )'"> New Employee </button>
+    </div>
+ </div>
 
 @section scripts
 {
     <script>
         $(document).ready(function () {
-
-            $("#Employees").on("click", ".js-delete", function () {
-                var button = $(this);
-                if (confirm("Are you sure You want to delete ?")) {
-                    $.ajax({
-                        //url: "/api/employees/" + $(this).attr("data-customer-id"),
-                        url: "/employees/" + $button.attr("data-employee-EmployeeId"),
-                        method: "POST",
-                        success: function () {
-                            console.log("Post delete success");
-                            button.parents("tr").remove();
-                        }
-                    })
-                }
-            });
-
-            $("#New").click(function () {
-                $.ajax({
-                    url: "/Employee/New",
-                    method: "GET",
-                    success: function () {
-                        console.log("Get Create success");
-                    }
-                })
-            });
-
         });
     </script>
 }

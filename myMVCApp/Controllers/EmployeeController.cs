@@ -67,14 +67,14 @@ namespace myMVCApp.Controllers
             return RedirectToAction("Index", "Employee", new { employeeInDb.DepartmentId });
         }
             
-        public ActionResult New()
+        public ActionResult New(int departmentId)
         {
             var viewModel = new EmployeeFormViewModel
             {
                
                 Employee = new Employee()
                 {
-                   // DepartmentId = departmentId
+                   DepartmentId = departmentId
                 }
             };
 
