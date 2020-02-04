@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using myMVCApp.Models;
+using myMVCApp.ViewModels;
 
 namespace myMVCApp.Controllers
 {
@@ -31,9 +32,8 @@ namespace myMVCApp.Controllers
             return View(employees);
         }
               
-        public ActionResult Details(int id)
+        public ActionResult Details(int employeeId)
         {
-
             /*   Employee employee = new Employee()
                {
                    EmployeeId = 101,
@@ -43,7 +43,7 @@ namespace myMVCApp.Controllers
                };*/
 
             // linq single
-            Employee employee = _context.Employees.SingleOrDefault(emp => emp.EmployeeId == id);
+            Employee employee = _context.Employees.SingleOrDefault(emp => emp.EmployeeId == employeeId);
             
             if (employee == null)
                 return HttpNotFound();
@@ -51,5 +51,87 @@ namespace myMVCApp.Controllers
             return View(employee);
         }
 
+        [HttpPost]  //Goes only with Post request
+        //[ValidateAntiForgeryToken]
+        public ActionResult Delete(int employeeId) // The employeeId is passed by View
+        {
+            // Get customer from db for given id.
+            var employeeInDb = _context.Employees.SingleOrDefault(e => e.EmployeeId == employeeId);
+            // Check for existence of object.
+            if (employeeInDb == null)
+                return HttpNotFound();
+            //Remove from memory and save to DB...
+            _context.Employees.Remove(employeeInDb);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Employee", new { employeeInDb.DepartmentId });
+        }
+            
+        public ActionResult New()
+        {
+            var viewModel = new EmployeeFormViewModel
+            {
+               
+                Employee = new Employee()
+                {
+                   // DepartmentId = departmentId
+                }
+            };
+
+            return View("EmployeeForm", viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        /*
+            public ActionResult Create(FormCollection formCollection)
+            Employee employee = new Employee();
+            employee.Name = formCollection["Name"];
+            employee.Gender = formCollection["Gender"];
+            employee.City = formCollection["City"];
+        */
+        public ActionResult Save(Employee employee)
+        {
+            // Save is called by EmployeeFormView
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new EmployeeFormViewModel
+                {
+                    Employee= employee,
+                };
+
+                return View("EmployeeForm", viewModel);
+            }
+
+            if (employee.EmployeeId == 0)
+                _context.Employees.Add(employee);
+            else
+            {
+                // Update case...
+                var employeeInDb = _context.Employees.Single(e => e.EmployeeId == employee.EmployeeId);
+                employeeInDb.Name = employee.Name;
+                employeeInDb.Gender = employee.Gender;
+                employeeInDb.City = employee.City;
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Employee", new { employee.DepartmentId });
+        }
+
+        public ActionResult Edit(int employeeId)
+        {
+            var employee = _context.Employees.SingleOrDefault(c => c.EmployeeId == employeeId);
+
+            if (employee == null)
+                return HttpNotFound();
+
+            var viewModel = new EmployeeFormViewModel
+            {
+                Employee = employee
+            };
+
+            return View("EmployeeForm", viewModel);
+        }
     }
 }

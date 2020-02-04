@@ -1,5 +1,5 @@
 ﻿<!-- Import model to this page-->
-@model IEnumerable<myMVCApp.Models.Employee> 
+@model IEnumerable<myMVCApp.Models.Employee>
 @using myMVCApp.Models;
 
 @{
@@ -8,22 +8,93 @@
 
 <h2>List of Employees</h2>
 <div style="font-family:Arial">
-    <p>
-        <!-- TO DO : Action-->
-        @Html.ActionLink("Create New", "Create")
-    </p>
 
-    <ul>
-        @foreach (Employee employee in Model)
-        {
-            <li>
-                <!-- MVC HTML helper tag, redirect to  page link text, action name, controller name and route values dictionary  -->
-                @Html.ActionLink(employee.Name, "Details", "Employee", new { id = employee.EmployeeId }, null)
-            </li>
-        }
-    </ul>
+    <table id="employees" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <!-- Add new table hading -->
+                <th colspan="2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Employee employee in Model)
+            {
+                <tr>
+                    <!-- MVC HTML helper tag, redirect to  page link text, action name, controller name and route values dictionary  -->
+                    <td>@Html.ActionLink(employee.Name, "Details", "Employee", new { @employee.EmployeeId }, null)</td>
+                    <!--Zobrazime button Delete a ked user nan klikne urebime delete selected customer-->
+                    <!-- pouzijeme bootstrap class "btn-link aby button vyzeral ako link-->
+                    <!--<button data-customer-id="employee.EmployeeId" class="btn-link js-delete">Delete</button> <!-- pouzijeme jQuery to handle button-->
+                    <!-- Deleting using post localhost:63542/Employee/Delete/1 -->
+                    <td>
+                        <!--  Html.BeginForm extension method in ASP.Net MVC Razor to create HTML Form -->
+                        <!-- ActionName – Name of the Action. In this case the name is Delete -->
+                        <!-- Name of the Controller. In this case the name is Employee -->
+                        <!-- id is a root value -->
+                        @using (Html.BeginForm("Delete", "Employee"))
+                        {
+                            <input type="submit" value="Delete" 
+                                   onclick="return confirm('Are you sure You want to delete @employee.Name ?');" />
+                        }
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("Edit", "Employee", new { employee.EmployeeId }))
+                        {
+                            <input type="submit" value="Edit" />
+                        }
+                    </td>
+                </tr>
+                <tr>
+                   <!-- <td><input type="submit" value="Create New" id="New"/></td> -->
+                    <td><button type="button" onclick="location.href='@Url.Action("New", "Employee")'"> New Employee </button> </td> 
+                    <td><button type="button" onclick="location.href='@Url.Action("Index", "Department")'"> Back to Department list </button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <!--
+    <p>
+       Html.ActionLink("Back to Department list", "Index", "Department")
+       Html.ActionLink("Create New", "Create")
+    </p> -->
 </div>
-<div>
-    @Html.ActionLink("Back to Department list", "Index", "Department")
-</div>
-    
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $("#Employees").on("click", ".js-delete", function () {
+                var button = $(this);
+                if (confirm("Are you sure You want to delete ?")) {
+                    $.ajax({
+                        //url: "/api/employees/" + $(this).attr("data-customer-id"),
+                        url: "/employees/" + $button.attr("data-employee-EmployeeId"),
+                        method: "POST",
+                        success: function () {
+                            console.log("Post delete success");
+                            button.parents("tr").remove();
+                        }
+                    })
+                }
+            });
+
+            $("#New").click(function () {
+                $.ajax({
+                    url: "/Employee/New",
+                    method: "GET",
+                    success: function () {
+                        console.log("Get Create success");
+                    }
+                })
+            });
+
+        });
+    </script>
+}
+
+
+
+
+
