@@ -84,5 +84,20 @@ namespace myMVCApp.Controllers
 
             return View("DepartmentForm", viewModel);
         }
+
+        [HttpPost]  //Goes only with Post request
+        public ActionResult Delete(int departmentId) // The employeeId is passed by View
+        {
+            // Get department from db for given id.
+            var departmentInDb = _context.Departments.SingleOrDefault(d => d.DepartmentId == departmentId);
+            // Check for existence of object.
+            if (departmentInDb == null)
+                return HttpNotFound();
+            //Remove from memory and save to DB...
+            _context.Departments.Remove(departmentInDb);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Department");
+        }
     }
 }
