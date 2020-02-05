@@ -8,18 +8,41 @@
 <h2>Department List</h2>
 
 <div style="font-family:Arial">
-    <p>
-        <!-- TO DO : Action-->
-        @Html.ActionLink("Create New", "Create")
-    </p>
+    @if (Model.Any())
+    {
+        <table id="Departments" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Department Name</th>
+                    <th colspan="2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Department department in Model)
+                {
+                    <tr>
+                        <!-- MVC HTML helper tag, redirect to  employee page ..link text, action name, controller name and route value ..pass departmentTd PK -->
+                        <td>@Html.ActionLink(department.Name, "Index", "Employee", new { departmentId = department.DepartmentId }, null) </td>
+                        <td>
+                            @using (Html.BeginForm("Delete", "Department", new { department.DepartmentId }))
+                            {
+                                <input type="submit" value="Delete" />
+                            }
+                        </td>
+                        <td>
+                            @using (Html.BeginForm("Edit", "Department", new { department.DepartmentId }))
+                            {
+                                <input type="submit" value="Edit" />
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 
-    <ul>
-        @foreach (Department department in Model)
-        {
-            <li>
-                <!-- MVC HTML helper tag, redirect to  employee page ..link text, action name, controller name and route value ..pass departmentTd PK -->
-                @Html.ActionLink(department.Name, "Index", "Employee", new { departmentId = department.DepartmentId }, null)
-            </li>
-        }
-    </ul>
+    <div>
+       <button type="button" onclick="location.href='@Url.Action("New", "Department")'"> New Department </button>
+    </div>
 </div>
+

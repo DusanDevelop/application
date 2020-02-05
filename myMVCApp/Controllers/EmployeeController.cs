@@ -99,7 +99,7 @@ namespace myMVCApp.Controllers
             {
                 var viewModel = new EmployeeFormViewModel
                 {
-                    Employee= employee,
+                    Employee= employee
                 };
 
                 return View("EmployeeForm", viewModel);

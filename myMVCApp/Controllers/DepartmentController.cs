@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using myMVCApp.ViewModels;
 
 namespace myMVCApp.Controllers
 {
@@ -28,6 +29,60 @@ namespace myMVCApp.Controllers
             if (departments == null)
                 return HttpNotFound();
             return View(departments);
+        }
+
+        public ActionResult New()
+        {
+            var viewModel = new DepartmentFormViewModel
+            {
+                Department = new Department()
+            };
+
+            return View("DepartmentForm", viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Save(Department department)
+        {
+            // Save is called by DepartmenFormView
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new DepartmentFormViewModel
+                {
+                    Department = department
+                };
+
+                return View("EmployeeForm", viewModel);
+            }
+
+            if (department.DepartmentId == 0)
+                _context.Departments.Add(department);
+            else
+            {
+                // Update case...
+                var departmentInDb = _context.Departments.Single(d => d.DepartmentId == department.DepartmentId);
+                departmentInDb.Name = department.Name;
+            }
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Department");
+        }
+
+        public ActionResult Edit(int departmentId)
+        {
+            var department = _context.Departments.SingleOrDefault(d => d.DepartmentId == departmentId);
+
+            if (department == null)
+                return HttpNotFound();
+
+            var viewModel = new DepartmentFormViewModel
+            {
+                Department = department
+            };
+
+            return View("DepartmentForm", viewModel);
         }
     }
 }
