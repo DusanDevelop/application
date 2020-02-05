@@ -25,11 +25,13 @@ namespace myMVCApp.Controllers
         // GET: Employee
         public ActionResult Index(int departmentId) //PK of Department
         {
-            //List<Employee> employees = _context.Employees.ToList();
             List<Employee> employees = _context.Employees.Where(emp => emp.DepartmentId == departmentId).ToList();
-            if (employees == null)
-                return HttpNotFound();
-            return View(employees);
+            var viewModel = new EmployeeViewModel
+            {
+                Employees = employees,
+                DepartmentId = departmentId
+            };
+            return View(viewModel);
         }
               
         public ActionResult Details(int employeeId)
