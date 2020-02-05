@@ -151,6 +151,14 @@
     <Compile Include="Migrations\202001301107262_addDepartment.designer.cs">
       <DependentUpon>202001301107262_addDepartment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002051042277_departmentNameMandatory.cs" />
+    <Compile Include="Migrations\202002051042277_departmentNameMandatory.designer.cs">
+      <DependentUpon>202002051042277_departmentNameMandatory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002051100545_employeeNameMandatory.cs" />
+    <Compile Include="Migrations\202002051100545_employeeNameMandatory.designer.cs">
+      <DependentUpon>202002051100545_employeeNameMandatory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Department.cs" />
@@ -227,6 +235,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001301107262_addDepartment.resx">
       <DependentUpon>202001301107262_addDepartment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002051042277_departmentNameMandatory.resx">
+      <DependentUpon>202002051042277_departmentNameMandatory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002051100545_employeeNameMandatory.resx">
+      <DependentUpon>202002051100545_employeeNameMandatory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

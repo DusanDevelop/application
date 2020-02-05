@@ -1,21 +1,30 @@
 ﻿@model myMVCApp.ViewModels.DepartmentFormViewModel
 @{
-    ViewBag.Title = "New Department";
+                /**/
+
+                ViewBag.Title = "New Department";
 }
 
-<h2>New Department</h2>
+<h2>Department</h2>
 
 @using (Html.BeginForm("Save", "Department"))
 {
-<div class="form-group">
-    @Html.LabelFor(m => m.Department.Name)
-    @Html.TextBoxFor(m => m.Department.Name, new { @class = "form-control" })
-    <!-- 3.) Customer.Name is requered need validation -->
-    <!-- Html.ValidationMessageFor(m => m.Department.Name) -->
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Department.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Department.Name, new { @class = "form-control" })
+                <!-- Department.Name is requered needs validation -->
+                @Html.ValidationMessageFor(m => m.Department.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <!-- Add Id as a hidden field to form-->
+        @Html.HiddenFor(m => m.Department.DepartmentId)
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
     </div>
- 
-    <!-- Add Id as a hidden field to form-->
-    @Html.HiddenFor(m => m.Department.DepartmentId)
-    @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-primary">Save</button>
-}
+ }

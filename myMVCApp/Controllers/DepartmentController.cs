@@ -53,7 +53,7 @@ namespace myMVCApp.Controllers
                     Department = department
                 };
 
-                return View("EmployeeForm", viewModel);
+                return View("DepartmentForm", viewModel);
             }
 
             if (department.DepartmentId == 0)
