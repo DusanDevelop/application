@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using myMVCApp.ViewModels;
+using System.Net;
 
 namespace myMVCApp.Controllers
 {
@@ -18,7 +19,10 @@ namespace myMVCApp.Controllers
         }
         protected override void Dispose(bool disposing)
         {
-            _context.Dispose();
+            if (disposing)
+            {
+                _context.Dispose();
+            }
             base.Dispose(disposing);
         }
 
@@ -26,11 +30,11 @@ namespace myMVCApp.Controllers
         public ActionResult Index()
         {
             List<Department> departments = _context.Departments.ToList();
-            if (departments == null)
-                return HttpNotFound();
+          
             return View(departments);
         }
 
+        // GET:
         public ActionResult New()
         {
             var viewModel = new DepartmentFormViewModel
@@ -70,8 +74,14 @@ namespace myMVCApp.Controllers
             return RedirectToAction("Index", "Department");
         }
 
+        [HttpPost]
         public ActionResult Edit(int departmentId)
         {
+            if (departmentId == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             var department = _context.Departments.SingleOrDefault(d => d.DepartmentId == departmentId);
 
             if (department == null)
@@ -86,8 +96,14 @@ namespace myMVCApp.Controllers
         }
 
         [HttpPost]  //Goes only with Post request
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(int departmentId) // The employeeId is passed by View
         {
+            if (departmentId == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             // Get department from db for given id.
             var departmentInDb = _context.Departments.SingleOrDefault(d => d.DepartmentId == departmentId);
             // Check for existence of object.

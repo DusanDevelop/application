@@ -9,43 +9,44 @@
 <div style="font-family:Arial">
     @if (Model.Employees.Any())
     {
-        <table id="Employees" class="table table-bordered table-hover">
-            <thead>
+    <table id="Employees" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th colspan="2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Employee employee in Model.Employees)
+            {
                 <tr>
-                    <th>Employee Name</th>
-                    <th colspan="2">Action</th>
+                    <!-- MVC HTML helper tag, redirect to  page link text, action name, controller name and route values dictionary  -->
+                    <td>@Html.ActionLink(employee.Name, "Details", "Employee", new { @employee.EmployeeId }, null)</td>
+                    <!--Zobrazime button Delete a ked user nan klikne urebime delete selected customer-->
+                    <!-- pouzijeme bootstrap class "btn-link aby button vyzeral ako link-->
+                    <!--<button data-customer-id="employee.EmployeeId" class="btn-link js-delete">Delete</button> <!-- pouzijeme jQuery to handle button-->
+                    <!-- Deleting using post localhost:63542/Employee/Delete/1 -->
+                    <td>
+                        <!--  Html.BeginForm extension method in ASP.Net MVC Razor to create HTML Form -->
+                        <!-- ActionName – Name of the Action. In this case the name is Delete -->
+                        <!-- Name of the Controller. In this case the name is Employee -->
+                        <!-- id is a root value -->
+                        @using (Html.BeginForm("Delete", "Employee", new { employee.EmployeeId }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="submit" value="Delete" />
+                        }
+                    </td>
+                    <td>
+                        @using (Html.BeginForm("Edit", "Employee", new { employee.EmployeeId }))
+                        {
+                            <input type="submit" value="Edit" />
+                        }
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (Employee employee in Model.Employees)
-                {
-                    <tr>
-                        <!-- MVC HTML helper tag, redirect to  page link text, action name, controller name and route values dictionary  -->
-                        <td>@Html.ActionLink(employee.Name, "Details", "Employee", new { @employee.EmployeeId }, null)</td>
-                        <!--Zobrazime button Delete a ked user nan klikne urebime delete selected customer-->
-                        <!-- pouzijeme bootstrap class "btn-link aby button vyzeral ako link-->
-                        <!--<button data-customer-id="employee.EmployeeId" class="btn-link js-delete">Delete</button> <!-- pouzijeme jQuery to handle button-->
-                        <!-- Deleting using post localhost:63542/Employee/Delete/1 -->
-                        <td>
-                            <!--  Html.BeginForm extension method in ASP.Net MVC Razor to create HTML Form -->
-                            <!-- ActionName – Name of the Action. In this case the name is Delete -->
-                            <!-- Name of the Controller. In this case the name is Employee -->
-                            <!-- id is a root value -->
-                            @using (Html.BeginForm("Delete", "Employee", new { employee.EmployeeId }))
-                            {
-                                <input type="submit" value="Delete" />
-                            }
-                        </td>
-                        <td>
-                            @using (Html.BeginForm("Edit", "Employee", new { employee.EmployeeId }))
-                            {
-                                <input type="submit" value="Edit" />
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
     }
     <div>
         <button type="button" onclick="location.href='@Url.Action("Index", "Department")'"> Back to Department list </button>

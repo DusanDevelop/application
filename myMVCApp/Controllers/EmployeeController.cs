@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using myMVCApp.Models;
@@ -18,7 +19,10 @@ namespace myMVCApp.Controllers
         }
         protected override void Dispose(bool disposing)
         {
-            _context.Dispose();
+            if (disposing)
+            {
+                _context.Dispose();
+            }
             base.Dispose(disposing);
         }
 
@@ -34,19 +38,16 @@ namespace myMVCApp.Controllers
             return View(viewModel);
         }
               
-        public ActionResult Details(int employeeId)
+        public ActionResult Details(int employeeId) //PK of Employee
         {
-            /*   Employee employee = new Employee()
-               {
-                   EmployeeId = 101,
-               Name = "John",
-               Gender = "Male",
-               City = "London"
-               };*/
+            if (employeeId == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
-            // linq single
+            // Linq SingleOrDefault.
             Employee employee = _context.Employees.SingleOrDefault(emp => emp.EmployeeId == employeeId);
-            
+            // Check for existence of object.
             if (employee == null)
                 return HttpNotFound();
 
@@ -54,23 +55,35 @@ namespace myMVCApp.Controllers
         }
 
         [HttpPost]  //Goes only with Post request
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(int employeeId) // The employeeId is passed by View
         {
+            if (employeeId == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             // Get customer from db for given id.
             var employeeInDb = _context.Employees.SingleOrDefault(e => e.EmployeeId == employeeId);
             // Check for existence of object.
             if (employeeInDb == null)
                 return HttpNotFound();
+
             //Remove from memory and save to DB...
             _context.Employees.Remove(employeeInDb);
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Employee", new { employeeInDb.DepartmentId });
         }
-            
+
+        // GET:
         public ActionResult New(int departmentId)
         {
+            if (departmentId == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             var viewModel = new EmployeeFormViewModel
             {
                
@@ -95,6 +108,8 @@ namespace myMVCApp.Controllers
         public ActionResult Save(Employee employee)
         {
             // Save is called by EmployeeFormView
+
+            // Validate model.
             if (!ModelState.IsValid)
             {
                 var viewModel = new EmployeeFormViewModel
@@ -106,7 +121,10 @@ namespace myMVCApp.Controllers
             }
 
             if (employee.EmployeeId == 0)
+            {
+                // Create case...
                 _context.Employees.Add(employee);
+            }
             else
             {
                 // Update case...
@@ -121,8 +139,15 @@ namespace myMVCApp.Controllers
             return RedirectToAction("Index", "Employee", new { employee.DepartmentId });
         }
 
+        [HttpPost]
+        //[ValidateAntiForgeryToken] not needed, this is set by EmployeeForm on Save action 
         public ActionResult Edit(int employeeId)
         {
+            if (employeeId == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             var employee = _context.Employees.SingleOrDefault(c => c.EmployeeId == employeeId);
 
             if (employee == null)
