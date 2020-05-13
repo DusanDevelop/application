@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-// Zmena v homeMaster branch DusanBranch
+// Zmena v homeMaster branch DusanBranch dalsia zmena
 namespace myMVCApp.Controllers
 {
     public class HomeController : Controller
